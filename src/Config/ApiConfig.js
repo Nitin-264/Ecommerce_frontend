@@ -15,7 +15,7 @@
 
 import axios from "axios";
 
-export const API_BASE_URL = "ecommercebackend-production-1487.up.railway.app";
+export const API_BASE_URL = "https://ecommercebackend-production-1487.up.railway.app";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -39,3 +39,4 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
