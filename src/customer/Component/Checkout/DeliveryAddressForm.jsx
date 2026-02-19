@@ -1,13 +1,97 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import AddressCard from "../AddressCard/AddressCard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {createOrder} from "../../../State/Order/Action"
+import { useEffect, useMemo } from "react";
+import { createOrder, getOrderHistory } from "../../../State/Order/Action";
 
 const DeliveryAddressForm = () => {
 
     const dispatch=useDispatch();
     const navigate=useNavigate();
+    const { user } = useSelector((store) => store.auth);
+    const { orders } = useSelector((store) => store.order);
+    const profilePhone =
+      user?.mobile ||
+      user?.phoneNumber ||
+      user?.phone ||
+      user?.contactNumber ||
+      "";
+
+    const normalizeAddress = (address = {}) => ({
+      firstName: address.firstName || user?.firstName || "",
+      lastName: address.lastName || user?.lastName || "",
+      streetAddress:
+        address.streetAddress ||
+        address.address ||
+        address.addressLine1 ||
+        address.line1 ||
+        address.street ||
+        "",
+      city: address.city || address.town || address.district || "",
+      state: address.state || address.region || address.province || "",
+      pinCode:
+        address.pinCode ||
+        address.postalCode ||
+        address.zipCode ||
+        address.zip ||
+        address.pincode ||
+        "",
+      mobile:
+        address.mobile ||
+        address.phoneNumber ||
+        address.phone ||
+        address.contactNumber ||
+        profilePhone ||
+        ""
+    });
+
+    const hasUsableAddress = (address = {}) =>
+      Boolean(
+        (address.streetAddress || "").trim() ||
+        (address.city || "").trim() ||
+        (address.state || "").trim() ||
+        (address.pinCode || "").trim()
+      );
+
+    const savedAddresses = useMemo(() => {
+      const profileAddresses = !user
+        ? []
+        : Array.isArray(user.addresses)
+        ? user.addresses
+        : user.address
+        ? [user.address]
+        : [];
+
+      const orderAddresses = Array.isArray(orders)
+        ? orders.map((order) => order?.shippingAddress).filter(Boolean)
+        : [];
+
+      const merged = [...profileAddresses, ...orderAddresses]
+        .map((address) => normalizeAddress(address))
+        .filter((address) => hasUsableAddress(address));
+
+      const uniqueAddresses = [];
+      const seen = new Set();
+      for (const address of merged) {
+        const key = `${address.firstName}|${address.lastName}|${address.streetAddress}|${address.city}|${address.state}|${address.pinCode}|${address.mobile}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueAddresses.push(address);
+        }
+      }
+
+      return uniqueAddresses;
+    }, [user, orders]);
+
+    useEffect(() => {
+      dispatch(getOrderHistory());
+    }, [dispatch]);
+
+    const handleDeliverToSavedAddress = (address) => {
+      const orderData = { address: normalizeAddress(address), navigate };
+      dispatch(createOrder(orderData));
+    };
 
     const handleEvent = (e) => {
     e.preventDefault();
@@ -19,7 +103,8 @@ const DeliveryAddressForm = () => {
         streetAddress: data.get('address'),
         state: data.get('state'),
         city:data.get('city'),
-        pinCode: data.get('pin'),        
+        pinCode: data.get('pin'),
+        mobile: profilePhone,
     };
 
     const orderData = { address,navigate };
@@ -29,27 +114,37 @@ const DeliveryAddressForm = () => {
   return (
     <Grid container spacing={4}>
       {/* Address Card Section */}
-      <Grid size={{ xs: 12, lg: 5 }}>
-        <Box className="border rounded-e-md shadow-md h-[30.5rem] overflow-y-scroll">
-          <Box className="p-5 py-7 border-b cursor-pointer">
-            <AddressCard />
-            <Button className="text-left "
-              sx={{ mt: 2, bgcolor: "rgb(145,85,253)", color: "#fff" }}
-              size="large"
-              variant="contained"
-            >
-              Deliver Here
-            </Button>
-          </Box>
+      <Grid item xs={12} lg={5}>
+        <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-auto">
+          {savedAddresses.length === 0 ? (
+            <Box className="p-5 py-7 border-b">
+              <AddressCard address={{}} />
+            </Box>
+          ) : (
+            savedAddresses.map((address, index) => (
+              <Box key={index} className="p-5 py-7 border-b">
+                <AddressCard address={address} />
+                <Button
+                  className="text-left "
+                  sx={{ mt: 2, bgcolor: "rgb(145,85,253)", color: "#fff" }}
+                  size="large"
+                  variant="contained"
+                  onClick={() => handleDeliverToSavedAddress(address)}
+                >
+                  Deliver Here
+                </Button>
+              </Box>
+            ))
+          )}
         </Box>
       </Grid>
 
       {/* Form Section */}
-      <Grid size={{ xs: 12, lg: 7 }}>
-        <Box className="border rounded-s-md shadow-md p-5">
+      <Grid item xs={12} lg={7}>
+        <Box className="border rounded-md shadow-md p-5">
           <form onSubmit={handleEvent }>
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="firstName"
@@ -59,7 +154,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="given-name"
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="lastName"
@@ -69,7 +164,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="family-name"
                 />
               </Grid>
-              <Grid size={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   id="address"
@@ -81,7 +176,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="street-address"
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="state"
@@ -91,7 +186,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="address-level1"
                 />
               </Grid>
-               <Grid size={{ xs: 12, sm: 6 }}>
+               <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="city"
@@ -101,7 +196,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="address-level1"
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="pin"
@@ -111,7 +206,7 @@ const DeliveryAddressForm = () => {
                   autoComplete="postal-code"
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid item xs={12} sm={6}>
                 <Button
                   type="submit"
                   variant="contained"

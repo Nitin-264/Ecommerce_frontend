@@ -25,6 +25,8 @@ const RegisterForm = () => {
             firstName:data.get("firstName"),
             lastName:data.get("lastName"),
             email:data.get("email"),
+            mobile:data.get("phoneNumber"),
+            phoneNumber:data.get("phoneNumber"),
             password:data.get("password")
         }
         dispatch(register(userData))
@@ -34,7 +36,7 @@ const RegisterForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-           <Grid size={{ xs: 12, sm: 6 }}>
+           <Grid item xs={12} sm={6}>
                 <TextField
                 required
                 id='firstName'
@@ -44,7 +46,7 @@ const RegisterForm = () => {
                 autoComplete='given-name'
                 />
             </Grid>
-             <Grid size={{ xs: 12, sm: 6 }}>
+             <Grid item xs={12} sm={6}>
                 <TextField
                 required
                 id='lastName'
@@ -54,7 +56,7 @@ const RegisterForm = () => {
                 autoComplete='given-name'
                 />
             </Grid>
-             <Grid size={{ xs: 12}}>
+             <Grid item xs={12}>
                 <TextField
                 required
                 id='email'
@@ -64,7 +66,18 @@ const RegisterForm = () => {
                 autoComplete='email'
                 />
             </Grid>
-            <Grid size={{ xs: 12}}>
+            <Grid item xs={12}>
+                <TextField
+                required
+                id='phoneNumber'
+                name='phoneNumber'
+                label='Phone Number'
+                fullWidth
+                autoComplete='tel'
+                inputProps={{ maxLength: 15 }}
+                />
+            </Grid>
+            <Grid item xs={12}>
                 <TextField
                 required
                 id='password'
@@ -74,12 +87,13 @@ const RegisterForm = () => {
                 autoComplete='password'
                 />
             </Grid>
-             <Grid size={{ xs: 12}}>
-                <Button className='bg-[#9155FD] w-full'
+             <Grid item xs={12}>
+                <Button
                 type='submit'
                 variant='contained'
                 size='large'
-                sx={{padding:".8rem 0",bgcolor:"#9155FD"}}>
+                fullWidth
+                sx={{py:1.2,bgcolor:"#9155FD"}}>
                     Register
                 </Button>
             </Grid>

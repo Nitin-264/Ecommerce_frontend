@@ -1,4 +1,3 @@
-import { Category } from '@mui/icons-material'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -6,7 +5,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { deleteProduct, findProducts } from "../../State/Product/Action"
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '@mui/material/Avatar'
@@ -16,6 +15,18 @@ import CardHeader from '@mui/material/CardHeader'
 const ProductsTable = () => {
   const dispatch = useDispatch()
   const { customerproduct } = useSelector(store => store);
+  const productList = useMemo(() => {
+    if (Array.isArray(customerproduct?.products)) {
+      return customerproduct.products;
+    }
+    if (Array.isArray(customerproduct?.products?.content)) {
+      return customerproduct.products.content;
+    }
+    if (Array.isArray(customerproduct?.products?.products)) {
+      return customerproduct.products.products;
+    }
+    return [];
+  }, [customerproduct?.products]);
 
   const handleProductDelete=(productId)=>{
     dispatch(deleteProduct(productId))
@@ -23,19 +34,19 @@ const ProductsTable = () => {
 
   useEffect(() => {
     const data = {
-      category: "mens_kurta",
+      category: "",
       colors: [],
       sizes: [],
       minPrice: 0,
       maxPrice: 10000000,
-      minDiscount: 50,
-      sort: "price_low",
+      minDiscount: 0,
+      sort: "",
       pageNumber: 0,
-      pageSize: 5,
+      pageSize: 200,
       stock: ""
     }
     dispatch(findProducts(data))
-  }, [])
+  }, [dispatch])
   return (
     <div >
       <Card className='mt-2' sx={{ mt: 2, height: "100%" }} >
@@ -53,13 +64,13 @@ const ProductsTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customerproduct?.products?.content?.map((item) => (
+              {productList.map((item, index) => (
                 <TableRow
-                  key={item.name}
+                  key={item.id || item.name || index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell align="left">
-                    <Avatar src={item.imageUrl}></Avatar>
+                    <Avatar src={item.imageUrl || item.image}></Avatar>
                   </TableCell>
                   <TableCell align='left' scope="row">
                     {item.title}
@@ -79,6 +90,13 @@ const ProductsTable = () => {
                   </TableCell>
                 </TableRow>
               ))}
+              {productList.length === 0 && !customerproduct?.loading && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No products found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

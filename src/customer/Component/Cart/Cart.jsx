@@ -14,20 +14,20 @@ const Cart = () => {
   }
 
   useEffect(() => {
-  dispatch(getCart());
-}, [cart.cart]); 
+    dispatch(getCart());
+  }, [dispatch]);
   return (
-    <div>
+    <div className="pb-8">
       {/* Main layout */}
-      <div className="lg:grid grid-cols-3 lg:px-16 relative">
+      <div className="lg:grid grid-cols-3 lg:px-16 lg:gap-6 relative">
         {/* Left side: Cart items */}
-        <div className="col-span-2">
-          {cart.cart?.cartItem?.map((item)=><CartItem item={item}/>)}
+        <div className="col-span-2 space-y-4">
+          {cart.cart?.cartItem?.map((item)=><CartItem key={item.cartItemId ?? item.id} item={item}/>)}
           
         </div>
 
         {/* Right side: Price details */}
-        <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
+        <div className="px-5 lg:px-0 sticky top-20 self-start mt-5 lg:mt-0">
           <div className="border p-4 rounded-md shadow-sm">
             <p className="uppercase font-bold opacity-60 pb-4">Price Details</p>
             <hr />
@@ -50,7 +50,7 @@ const Cart = () => {
               </div>
             </div>
             <Button onClick={handleCheckout} variant='contained' className='w-full mt-5' sx={{px:'2.5rem',py:'.7rem',bgcolor:"Violet"}}>
-                    CheckOut
+                    Payment
             </Button>
           </div>
         </div>

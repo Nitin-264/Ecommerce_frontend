@@ -1,13 +1,18 @@
 import Grid from "@mui/material/Grid";
-import Rating from '@mui/material/Rating';
-import Box from '@mui/material/Box'
+import Rating from "@mui/material/Rating";
+import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
-const ProductReviewCard = () => {
+
+const ProductReviewCard = ({ review }) => {
+  const displayName = review?.name || "Anonymous";
+  const reviewDate = review?.createdAt
+    ? new Date(review.createdAt).toLocaleDateString()
+    : "";
+
   return (
     <div>
-      <Grid container spacing={2} gap={3}>
-        {/* Avatar Section */}
-        <Grid item xs={1}>
+      <Grid container spacing={2}>
+        <Grid item xs={2} sm={1}>
           <Box>
             <Avatar
               className="text-white"
@@ -17,20 +22,19 @@ const ProductReviewCard = () => {
                 bgcolor: "#9155fd",
               }}
             >
-              R
+              {displayName[0]?.toUpperCase() || "A"}
             </Avatar>
           </Box>
         </Grid>
 
-        {/* Review Content Section */}
-        <Grid item xs={9}>
+        <Grid item xs={10} sm={11}>
           <div className="space-y-2">
             <div>
-              <p className="font-semibold text-lg">Raam</p>
-              <p className="opacity-70">April 5, 2023</p>
+              <p className="font-semibold text-lg">{displayName}</p>
+              <p className="opacity-70">{reviewDate}</p>
             </div>
-            <Rating name="half-rating" value={4.5} readOnly precision={4.5}/>
-            <p>nice product, I love this shirt</p>
+            <Rating name="half-rating" value={review?.rating || 0} readOnly precision={0.5} />
+            <p>{review?.comment || ""}</p>
           </div>
         </Grid>
       </Grid>

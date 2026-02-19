@@ -24,7 +24,7 @@ const LoginForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-             <Grid size={{ xs: 12}}>
+             <Grid item xs={12}>
                 <TextField
                 required
                 id='email'
@@ -34,7 +34,7 @@ const LoginForm = () => {
                 autoComplete='email'
                 />
             </Grid>
-            <Grid size={{ xs: 12}}>
+            <Grid item xs={12}>
                 <TextField
                 required
                 id='password'
@@ -44,12 +44,13 @@ const LoginForm = () => {
                 autoComplete='password'
                 />
             </Grid>
-             <Grid size={{ xs: 12}}>
-                <Button className='bg-[#9155FD] w-full'
+             <Grid item xs={12}>
+                <Button
                 type='submit'
                 variant='contained'
                 size='large'
-                sx={{padding:".8rem 0",bgcolor:"#9155FD"}}>
+                fullWidth
+                sx={{py:1.2,bgcolor:"#9155FD"}}>
                     Login
                 </Button>
             </Grid>

@@ -9,7 +9,7 @@ const Footer = () => {
     <div>
       <Grid
         container
-        spacing={27}
+        spacing={4}
         className="bg-black text-white text-center mt-10"
         sx={{ bgcolor: 'black', color: 'white', py: 5 }}
       >

@@ -1,44 +1,56 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import Cart from '../Component/Cart/Cart'
-import Navigation from '../Component/Navigation/Navigation'
-import Footer from '../Component/Footer/Footer'
-import HomePage from '../Pages/HomePage/HomePage'
-import Product from '../Component/Product/Product'
-import ProductDetail from '../Component/ProductDetail/ProductDetail'
-import Checkout from '../Component/Checkout/Checkout'
-import Order from '../Component/Order/Order'
-import OrderDetails from '../Component/Order/OrderDetails'
-import PaymentSuccess from '../Component/Payment/PaymentSuccess'
+import { Route, Routes } from "react-router-dom";
+import Navigation from "../Component/Navigation/Navigation";
+import Footer from "../Component/Footer/Footer";
+import HomePage from "../Pages/HomePage/HomePage";
+import Product from "../Component/Product/Product";
+import ProductDetail from "../Component/ProductDetail/ProductDetail";
+import Cart from "../Component/Cart/Cart";
+import Checkout from "../Component/Checkout/Checkout";
+import Order from "../Component/Order/Order";
+import OrderDetails from "../Component/Order/OrderDetails";
+import PaymentSuccess from "../Component/Payment/PaymentSuccess";
+import Profile from "../Component/Profile/Profile";
 
 const CustomerRouters = () => {
   return (
-      <div>
-        <div>
-            <Navigation/>
-        </div>
-      <div>
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+
+      <main className="flex-1">
         <Routes>
-            <Route path='/' element={<HomePage/>}></Route>
-            <Route path='/login' element={<HomePage/>}></Route>
-            <Route path='/register' element={<HomePage/>}></Route>
-            <Route path='/cart' element={<Cart/>}></Route>
-            <Route path='/:lavelOne/:lavelTwo/:lavelThree' element={<Product/>}></Route>
-            <Route path='/product/:productId' element={<ProductDetail/>}></Route>
-            <Route path='/checkout' element={<Checkout/>}></Route>
-            <Route path='/account/order' element={<Order/>}></Route>
-            <Route path='/account/order/:orderId' element={<OrderDetails/>}></Route>
-            <Route path='/payment/:orderId' element={<PaymentSuccess/>}></Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/cart" element={<Cart />} />
 
-        
-        {/* <OrderDetails/> */}
+          {/* category routing */}
+          <Route
+            path="/:category/:section/:item"
+            element={<Product />}
+          />
+
+          <Route
+            path="/product/:productId"
+            element={<ProductDetail />}
+          />
+
+          <Route path="/checkout" element={<Checkout />} />
+
+          <Route path="/account/order" element={<Order />} />
+          <Route path="/account/profile" element={<Profile />} />
+          <Route
+            path="/account/order/:orderId"
+            element={<OrderDetails />}
+          />
+
+          <Route
+            path="/payment/:orderId"
+            element={<PaymentSuccess />}
+          />
         </Routes>
-      </div>
-      <div>
-        <Footer/>
-        </div>
-    </div>
-  )
-}
+      </main>
 
-export default CustomerRouters
+      <Footer />
+    </div>
+  );
+};
+
+export default CustomerRouters;

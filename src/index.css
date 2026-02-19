@@ -15,3 +15,25 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* optional global reset */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main-hero-carousel .alice-carousel__dots {
+  margin: 6px 0 2px;
+}
+
+.main-hero-carousel .alice-carousel__dots-item {
+  width: 8px;
+  height: 8px;
+  background-color: #cbd5e1;
+}
+
+.main-hero-carousel .alice-carousel__dots-item.__active {
+  width: 24px;
+  border-radius: 999px;
+  background-color: #0f172a;
+}

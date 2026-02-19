@@ -13,11 +13,32 @@ const OrderSummary = () => {
   const location=useLocation()
   const searchParams=new URLSearchParams(location.search);
   const orderId=searchParams.get("order_id")
-  const {order}=useSelector(store=>store);
+  const {order, auth}=useSelector(store=>store);
+  const profilePhone =
+    auth?.user?.mobile ||
+    auth?.user?.phoneNumber ||
+    auth?.user?.phone ||
+    auth?.user?.contactNumber ||
+    "";
+  const summaryAddress = {
+    ...(order.order?.shippingAddress || {}),
+    mobile:
+      order.order?.shippingAddress?.mobile ||
+      order.order?.shippingAddress?.phoneNumber ||
+      order.order?.shippingAddress?.phone ||
+      order.order?.shippingAddress?.contactNumber ||
+      profilePhone ||
+      "",
+  };
+  const visibleOrderItems = (order.order?.orderItem || []).filter((item) => {
+    const qty = item?.quantity;
+    if (qty === undefined || qty === null) return true;
+    return Number(qty) > 0;
+  });
 
   useEffect(()=>{
     dispatch(getOrderById(orderId))
-  },[orderId])
+  },[dispatch, orderId])
 
   const handleCheckout=()=>{
     dispatch(createPayment(orderId))
@@ -26,7 +47,7 @@ const OrderSummary = () => {
   return (
     <div>
       <div className='p-5 shadow-lg rounded-s-md border'>
-        <AddressCard address={order.order?.shippingAddress}/>
+        <AddressCard address={summaryAddress}/>
       </div>
       <div>
         <div>
@@ -34,8 +55,12 @@ const OrderSummary = () => {
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         {/* Left side: Cart items */}
         <div className="col-span-2">
-          {order.order?.orderItem.map((items)=>(
-            <CartItem item={items}/>
+          {visibleOrderItems.map((items, index)=>(
+            <CartItem
+              key={items?.id ?? `${items?.product?.id || "item"}-${index}`}
+              item={items}
+              readOnly
+            />
           ))}
         </div>
 
@@ -54,8 +79,8 @@ const OrderSummary = () => {
                 <span className='text-green-600'>₹{order.order?.discount}</span>
               </div>
               <div className="flex justify-between">
-                <span className='text-green-600'>Delivery Charge</span>
-                <span>Free</span>
+                <span>Delivery Charge</span>
+                <span className='text-green-600'>Free</span>
               </div>
               <div className="flex justify-between">
                 <span>Total Amount</span>
@@ -64,7 +89,7 @@ const OrderSummary = () => {
             </div>
             <Button variant='contained' className='w-full mt-5' sx={{px:'2.5rem',py:'.7rem',bgcolor:"Violet"}}
              onClick={handleCheckout}>
-                    CheckOut
+                    Payment
             </Button>
           </div>
         </div>

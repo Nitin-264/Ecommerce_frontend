@@ -9,11 +9,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 500,
+  width: { xs: '92%', sm: 500 },
   bgcolor: 'background.paper',
   outline:'none',
   boxShadow: 24,
   p: 4,
+  borderRadius: 1,
+  maxHeight: '90vh',
+  overflowY: 'auto'
 };
 
 const AuthModal = ({handleClose,open}) => {

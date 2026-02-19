@@ -1,25 +1,22 @@
 import { useTheme } from '@mui/material/styles';
-import React, { useState } from 'react'
+import React from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import Box from "@mui/material/Box"
 import ListItemIcon from '@mui/material/ListItemIcon';
-import EmailIcon from "@mui/icons-material/Email"
-import InboxIcon from "@mui/icons-material/Inbox"
 import DashBoardIcon from "@mui/icons-material/Dashboard"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import CssBaseline from '@mui/material/CssBaseline';
-import Drawer from '@mui/material/Drawer';
 import ListItemText from '@mui/material/ListItemText';
 import AdminDashBoard from "../../src/Admin/Components/DashBoard"
 import CreateProduct from "../../src/Admin/Components/CreateProduct"
 import CustomersTable from "../../src/Admin/Components/CustomersTable"
 import OrdersTable from "../../src/Admin/Components/OrdersTable"
 import ProductsTable from "../../src/Admin/Components/ProductsTable"
+import AdminAccount from "../../src/Admin/Components/AdminAccount";
 
 
 const menu = [
@@ -32,8 +29,7 @@ const menu = [
 ];
 const Admin = () => {
   const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const [sideBarVisible, setSideBarVisible] = useState(false);
+  useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();
 
   const drawerWidth = '240px'; // or '15%'
@@ -71,7 +67,7 @@ const Admin = () => {
       {/* Account List at bottom */}
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => navigate("/admin/account")}>
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
@@ -109,7 +105,9 @@ const Admin = () => {
           <Route path='/' element={<AdminDashBoard />} />
           <Route path='/product/create' element={<CreateProduct />} />
           <Route path='/products' element={<ProductsTable />} />
+          <Route path='/customers' element={<CustomersTable />} />
           <Route path='/orders' element={<OrdersTable />} />
+          <Route path='/account' element={<AdminAccount />} />
         </Routes>
       </div>
     </div>

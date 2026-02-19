@@ -63,7 +63,7 @@ export const singlefilter = [
   id: "stock",
   name: "AVAILIBILITY",
   options: [
-    { value: "in_the_stock", label: "In Stock" },
+    { value: "in_stock", label: "In Stock" },
     { value: "out_of_stock", label: "Out Of Stock" },
   ],
 }

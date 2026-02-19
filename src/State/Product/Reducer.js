@@ -20,8 +20,25 @@ export  const customerProductReducer=(state=initialState,action)=>{
   case FIND_PRODUCT_BY_ID_SUCCESS:
     return { ...state, loading: false, error: null, product: action.payload };
   case DELETE_PRODUCT_SUCCESS:
-    return{...state,loading:false,error:null,
-      products:state.products.filter((item)=>item.id!=action.payload)}
+    if (Array.isArray(state.products)) {
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        products: state.products.filter((item) => item.id !== action.payload)
+      };
+    }
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      products: {
+        ...state.products,
+        content: (state.products?.content || []).filter(
+          (item) => item.id !== action.payload
+        )
+      }
+    };
   case FIND_PRODUCT_FAILURE:
   case FIND_PRODUCT_BY_ID_FAILURE:
     return { ...state, loading: false, error: action.payload };

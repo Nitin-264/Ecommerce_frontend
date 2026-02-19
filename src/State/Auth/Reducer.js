@@ -12,10 +12,16 @@ export const authReducer=(state=initialState,action)=>{
         case REGISTER_REQUEST:
         case LOGIN_REQUEST:
         case GET_USER_REQUEST:
-            return {...state,isLoading:true,error:null}
+            return {...state,isLoading:true,error:null,user:null}
         case REGISTER_SUCCESS:
         case LOGIN_SUCCESS:
-            return {...state,isLoading:false,error:null,jwt:action.payload}
+            return {
+                ...state,
+                isLoading:false,
+                error:null,
+                user:null,
+                jwt: action.payload?.jwt || action.payload || null
+            }
         case GET_USER_SUCCESS:
             return {...state,isLoading:false,
             error:null,

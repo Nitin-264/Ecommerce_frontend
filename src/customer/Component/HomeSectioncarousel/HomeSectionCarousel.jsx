@@ -33,8 +33,8 @@ export default function HomeSectionCarousel({ data ,Section}) {
   };
 
   return (
-    <div className="relative px-4 lg:px-8">
-      <h2 className='text-2xl font-extrabold text-gray-800 py-5'>{Section}</h2>
+    <div className="relative px-1 sm:px-2 lg:px-3">
+      <h2 className='text-2xl font-extrabold text-gray-800 py-1'>{Section}</h2>
       <div className="relative">
         <AliceCarousel
           ref={carouselRef}
